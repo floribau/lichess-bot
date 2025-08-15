@@ -23,15 +23,15 @@ public class LichessApi {
         .header("Authorization", "Bearer " + token);
   }
 
-  // list challenges
-  public void getChallenges() throws IOException, InterruptedException {
-    HttpRequest request = authorizedRequest("/api/challenge").GET().build();
-    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+  // get my profile
+  public String getProfile() throws IOException, InterruptedException {
+    HttpRequest request = authorizedRequest("/api/account").GET().build();
+    return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
   }
 
   // accept challenge
-  public boolean acceptChallenge(String challengId) throws IOException, InterruptedException {
-    HttpRequest request = authorizedRequest("/api/challenge/" + challengId + "/accept")
+  public boolean acceptChallenge(String challengeId) throws IOException, InterruptedException {
+    HttpRequest request = authorizedRequest("/api/challenge/" + challengeId + "/accept")
         .POST(HttpRequest.BodyPublishers.noBody())
         .build();
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -39,8 +39,8 @@ public class LichessApi {
   }
 
   // decline challenge
-  public boolean declineChallenge(String challengId) throws IOException, InterruptedException {
-    HttpRequest request = authorizedRequest("/api/challenge/" + challengId + "/decline")
+  public boolean declineChallenge(String challengeId) throws IOException, InterruptedException {
+    HttpRequest request = authorizedRequest("/api/challenge/" + challengeId + "/decline")
         .POST(HttpRequest.BodyPublishers.noBody())
         .build();
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -95,6 +95,21 @@ public class LichessApi {
   public boolean makeMove(String gameId, String uciMove) throws IOException, InterruptedException {
     HttpRequest request = authorizedRequest("/api/bot/game/" + gameId + "/move/" + uciMove)
         .POST(HttpRequest.BodyPublishers.noBody())
+        .build();
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    return response.statusCode() == 200;
+  }
+
+  public boolean writeChatMessage(String gameId, String message)
+      throws IOException, InterruptedException {
+    String requestBody = String.format("""
+        {
+          "room": "player",
+          "text": "%s"
+        }
+        """, message);
+    HttpRequest request = authorizedRequest("/api/bot/game/" + gameId + "/chat")
+        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
         .build();
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
     return response.statusCode() == 200;
