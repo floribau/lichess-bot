@@ -11,17 +11,30 @@ public class ChessGameController {
 
   private final LichessApi api;
   private final int maxGames;
+  private final String userId;
+  private final String username;
   private final ConcurrentHashMap<String, ChessGame> gamesList = new ConcurrentHashMap<>();
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public ChessGameController(String apiToken){
+  public ChessGameController(String apiToken) throws IOException, InterruptedException {
     // default constructor with only one game
     this(apiToken, 1);
   }
 
-  public ChessGameController(String apiToken, int maxGames) {
+  public ChessGameController(String apiToken, int maxGames)
+      throws IOException, InterruptedException {
     this.api = new LichessApi(apiToken);
     this.maxGames = maxGames;
+
+    JsonNode profile = mapper.readTree(this.api.getProfile());
+    this.userId = profile.get("id").asText();
+    this.username = profile.get("username").asText();
+    if (!profile.has("title") || !profile.get("title").asText().equals("BOT")) {
+      System.out.println("Account not a bot yet, upgrading to bot");
+      api.upgradeToBot();
+    } else {
+      System.out.println("Already a bot account!");
+    }
   }
 
   public void startBot() throws IOException, InterruptedException {
@@ -33,10 +46,11 @@ public class ChessGameController {
     try {
       JsonNode event = mapper.readTree(json);
       String type = event.get("type").asText();
+
       switch (type) {
-        case "gameStart" -> handleGameStart(event);
-        case "gameFinish" -> handleGameFinish(event);
-        case "challenge" -> handleChallenge(event);
+        case "gameStart" -> handleGameStartEvent(event);
+        case "gameFinish" -> handleGameFinishEvent(event);
+        case "challenge" -> handleChallengeEvent(event);
         // case "challengeCanceled" -> System.out.println();
         // case "challengeDeclined" -> System.out.println();
         default -> {
@@ -49,25 +63,25 @@ public class ChessGameController {
     }
   }
 
-  private void handleGameStart(JsonNode event) {
+  private void handleGameStartEvent(JsonNode event) {
     String gameId = event.get("game").get("gameId").asText();
     String color = event.get("game").get("color").asText();
     boolean isWhite = color.equals("white");
 
     System.out.println("Game started: " + gameId);
-    ChessGame game = new ChessGame(api, gameId, isWhite);
+    ChessGame game = new ChessGame(api, username, gameId, isWhite);
     gamesList.put(gameId, game);
     new Thread(game).start();
   }
 
-  private void handleGameFinish(JsonNode event) {
+  private void handleGameFinishEvent(JsonNode event) {
     String gameId = event.get("game").get("gameId").asText();
 
     System.out.println("Game finished: " + gameId);
     gamesList.remove(gameId);
   }
 
-  private void handleChallenge(JsonNode event) {
+  private void handleChallengeEvent(JsonNode event) {
     String challengeId = event.get("challenge").get("id").asText();
 
     try {
