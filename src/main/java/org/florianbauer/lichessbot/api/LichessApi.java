@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public class LichessApi {
 
-  private static final String BASE_URL = "http://lichess.org";
+  private static final String BASE_URL = "https://lichess.org";
   private final String token;
   private final HttpClient client;
 
