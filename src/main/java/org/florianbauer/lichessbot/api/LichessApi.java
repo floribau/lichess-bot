@@ -65,7 +65,7 @@ public class LichessApi {
   }
 
   // upgrade to bot account
-  public boolean upgradeBot() throws IOException, InterruptedException {
+  public boolean upgradeToBot() throws IOException, InterruptedException {
     HttpRequest request = authorizedRequest("/api/bot/account/upgrade")
         .POST(HttpRequest.BodyPublishers.noBody())
         .build();
