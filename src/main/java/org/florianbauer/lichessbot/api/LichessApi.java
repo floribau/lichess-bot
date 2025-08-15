@@ -20,7 +20,7 @@ public class LichessApi {
   private HttpRequest.Builder authorizedRequest(String endpoint) {
     return HttpRequest.newBuilder()
         .uri(URI.create(BASE_URL + endpoint))
-        .header("Authorization", "Bearer" + token);
+        .header("Authorization", "Bearer " + token);
   }
 
   // list challenges
