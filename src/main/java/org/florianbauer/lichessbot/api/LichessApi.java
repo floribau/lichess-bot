@@ -100,18 +100,15 @@ public class LichessApi {
     return response.statusCode() == 200;
   }
 
-  public boolean writeChatMessage(String gameId, String message)
+  public boolean writeChatMessage(String gameId, String message, String room)
       throws IOException, InterruptedException {
-    String requestBody = String.format("""
-        {
-          "room": "player",
-          "text": "%s"
-        }
-        """, message);
+    String requestBody = String.format("{\"room\": \"%s\", \"text\": \"%s\"}", room, message);
     HttpRequest request = authorizedRequest("/api/bot/game/" + gameId + "/chat")
         .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+        .header("Content-Type", "application/json")
         .build();
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
     return response.statusCode() == 200;
   }
 

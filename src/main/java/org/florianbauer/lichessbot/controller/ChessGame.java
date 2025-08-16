@@ -60,12 +60,17 @@ public class ChessGame implements Runnable {
   }
 
   private void handleChatLineEvent(JsonNode event) {
-    String messageFromUsername = event.get("username").asText();
+    String fromUsername = event.get("username").asText();
+    String message = event.get("text").asText();
+    String room = event.get("room").asText();
+    System.out.println("New chat message from " + fromUsername + ": " + message);
 
-    if (!messageFromUsername.equals(username)) {
+    if (!fromUsername.equals(username)) {
       try {
-        api.writeChatMessage(gameId, "Howdy, I'm a bot!");
-        // TODO write nicer answers, maybe include LLM?
+        String answerMessage = "Howdy, I'm a bot!";
+        // TODO write nicer answers depending on message(s), maybe include LLM?
+        api.writeChatMessage(gameId, answerMessage, room);
+        // TODO raise error if writing chat message wasn't successful
       } catch (Exception e) {
         e.printStackTrace();
       }
