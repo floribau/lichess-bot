@@ -35,6 +35,8 @@ public class ChessGameController {
     } else {
       System.out.println("Already a bot account!");
     }
+
+    startBot();
   }
 
   public void startBot() throws IOException, InterruptedException {
@@ -87,9 +89,11 @@ public class ChessGameController {
     try {
       if (gamesList.size() < maxGames) {
         // accept challenge
+        System.out.println("Challenge accepted: " + challengeId);
         api.acceptChallenge(challengeId);
       } else {
         // decline challenge
+        System.out.println("Challenge declined: " + challengeId);
         api.declineChallenge(challengeId);
       }
     } catch(Exception e) {
