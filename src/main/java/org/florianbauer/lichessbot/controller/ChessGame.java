@@ -70,7 +70,6 @@ public class ChessGame implements Runnable {
         String answerMessage = "Howdy, I'm a bot!";
         // TODO write nicer answers depending on message(s), maybe include LLM?
         api.writeChatMessage(gameId, answerMessage, room);
-        // TODO raise error if writing chat message wasn't successful
       } catch (Exception e) {
         e.printStackTrace();
       }

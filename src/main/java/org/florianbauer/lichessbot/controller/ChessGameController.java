@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import org.florianbauer.lichessbot.api.LichessApi;
+import org.florianbauer.lichessbot.exception.LichessException;
 
 public class ChessGameController {
 
@@ -16,13 +17,13 @@ public class ChessGameController {
   private final ConcurrentHashMap<String, ChessGame> gamesList = new ConcurrentHashMap<>();
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public ChessGameController(String apiToken) throws IOException, InterruptedException {
+  public ChessGameController(String apiToken) throws IOException, InterruptedException, LichessException {
     // default constructor with only one game
     this(apiToken, 1);
   }
 
   public ChessGameController(String apiToken, int maxGames)
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, LichessException {
     this.api = new LichessApi(apiToken);
     this.maxGames = maxGames;
 
@@ -39,7 +40,7 @@ public class ChessGameController {
     startBot();
   }
 
-  public void startBot() throws IOException, InterruptedException {
+  public void startBot() throws IOException, InterruptedException, LichessException {
     api.streamEvents(this::handleEvent);
     // TODO throw error if code 404
   }
