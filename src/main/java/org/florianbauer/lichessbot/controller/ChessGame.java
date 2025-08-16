@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import java.io.IOException;
 import org.florianbauer.lichessbot.api.LichessApi;
-import org.florianbauer.lichessbot.bot.Bot;
+import org.florianbauer.lichessbot.bot.AbstractBot;
 import org.florianbauer.lichessbot.exception.LichessException;
 
 public class ChessGame implements Runnable {
 
   private final LichessApi api;
-  private final Bot bot;
+  private final AbstractBot bot;
   private final String username;
   private final String gameId;
   private final boolean isWhite;
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public ChessGame(LichessApi api, Bot bot, String username, String gameId, boolean isWhite) {
+  public ChessGame(LichessApi api, AbstractBot bot, String username, String gameId, boolean isWhite) {
     this.api = api;
     this.bot = bot;
     this.username = username;
@@ -79,7 +79,7 @@ public class ChessGame implements Runnable {
 
     if (!fromUsername.equals(username)) {
       try {
-        String answerMessage = "Howdy, I'm a bot!";
+        String answerMessage = "Howdy, I'm a abstractBot!";
         // TODO write nicer answers depending on message(s), maybe include LLM?
         api.writeChatMessage(gameId, answerMessage, room);
       } catch (Exception e) {

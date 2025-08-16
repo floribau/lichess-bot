@@ -5,7 +5,7 @@ import com.github.bhlangonijr.chesslib.move.Move;
 import java.util.List;
 import java.util.Random;
 
-public class RandomBot extends Bot{
+public class RandomBot extends AbstractBot {
   private final Random random = new Random();
 
   public String selectMove(String fen) {
