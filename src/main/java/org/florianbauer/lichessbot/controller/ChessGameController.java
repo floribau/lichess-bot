@@ -68,10 +68,11 @@ public class ChessGameController {
 
   private void handleGameStartEvent(JsonNode event) {
     String gameId = event.get("game").get("gameId").asText();
+    String opponentUsername = event.get("game").get("opponent").get("username").asText();
     String color = event.get("game").get("color").asText();
     boolean isWhite = color.equals("white");
 
-    System.out.println("Game started: " + gameId);
+    System.out.println("Game " + gameId + " started against " + opponentUsername);
     ChessGame game = new ChessGame(api, username, gameId, isWhite);
     gamesList.put(gameId, game);
     new Thread(game).start();

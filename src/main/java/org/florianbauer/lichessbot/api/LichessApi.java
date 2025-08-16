@@ -30,6 +30,7 @@ public class LichessApi {
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
     if (response.statusCode() != 200) {
+      // TODO case differentiation based on status code
       throw new LichessException(
           "getProfile request failed: HTTP " + response.statusCode() + " - " + response.body()
       );

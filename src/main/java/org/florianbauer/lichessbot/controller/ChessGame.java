@@ -25,7 +25,6 @@ public class ChessGame implements Runnable {
   public void run() {
     try {
       api.streamGameState(gameId, json -> handleGameState(json));
-      // TODO throw error if code 404
     } catch(Exception e) {
       e.printStackTrace();
     }
@@ -52,11 +51,11 @@ public class ChessGame implements Runnable {
   }
 
   private void handleGameFullEvent(JsonNode event) {
-
+    System.out.println("gameFullEvent, moves: " + event.get("state").get("moves").asText());
   }
 
   private void handleGameStateEvent(JsonNode event) {
-
+    System.out.println("gameStateEvent, moves: " + event.get("moves").asText());
   }
 
   private void handleChatLineEvent(JsonNode event) {
