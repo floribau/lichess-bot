@@ -2,20 +2,24 @@ package org.florianbauer.lichessbot.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Random;
+import com.github.bhlangonijr.chesslib.move.MoveList;
+import java.io.IOException;
 import org.florianbauer.lichessbot.api.LichessApi;
+import org.florianbauer.lichessbot.bot.Bot;
+import org.florianbauer.lichessbot.exception.LichessException;
 
 public class ChessGame implements Runnable {
 
   private final LichessApi api;
+  private final Bot bot;
   private final String username;
   private final String gameId;
   private final boolean isWhite;
   private final ObjectMapper mapper = new ObjectMapper();
-  private final Random random = new Random();  // TODO: for random-moves MVP, will be replaced by bot later
 
-  public ChessGame(LichessApi api, String username, String gameId, boolean isWhite) {
+  public ChessGame(LichessApi api, Bot bot, String username, String gameId, boolean isWhite) {
     this.api = api;
+    this.bot = bot;
     this.username = username;
     this.gameId = gameId;
     this.isWhite = isWhite;
@@ -50,12 +54,21 @@ public class ChessGame implements Runnable {
     }
   }
 
-  private void handleGameFullEvent(JsonNode event) {
-    System.out.println("gameFullEvent, moves: " + event.get("state").get("moves").asText());
+  private void handleGameFullEvent(JsonNode event)
+      throws LichessException, IOException, InterruptedException {
+    String san = event.get("moves").asText();
+    MoveList list = new MoveList();
+    list.loadFromSan(san);
+    System.out.println("gameFullEvent, moves: " + san);
+
+    if (isWhite) {
+      api.makeMove(gameId, bot.selectMove(list.getFen()));
+    }
   }
 
   private void handleGameStateEvent(JsonNode event) {
-    System.out.println("gameStateEvent, moves: " + event.get("moves").asText());
+    String san = event.get("moves").asText();
+    System.out.println("gameStateEvent, moves: " + san);
   }
 
   private void handleChatLineEvent(JsonNode event) {

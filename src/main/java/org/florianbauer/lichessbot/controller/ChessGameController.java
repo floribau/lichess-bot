@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import org.florianbauer.lichessbot.api.LichessApi;
+import org.florianbauer.lichessbot.bot.Bot;
+import org.florianbauer.lichessbot.bot.RandomBot;
 import org.florianbauer.lichessbot.exception.LichessException;
 
 public class ChessGameController {
@@ -73,7 +75,8 @@ public class ChessGameController {
     boolean isWhite = color.equals("white");
 
     System.out.println("Game " + gameId + " started against " + opponentUsername);
-    ChessGame game = new ChessGame(api, username, gameId, isWhite);
+    Bot bot = new RandomBot();
+    ChessGame game = new ChessGame(api, bot, username, gameId, isWhite);
     gamesList.put(gameId, game);
     new Thread(game).start();
   }
