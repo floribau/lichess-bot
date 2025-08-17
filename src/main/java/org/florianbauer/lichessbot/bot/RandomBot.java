@@ -8,6 +8,10 @@ import java.util.Random;
 public class RandomBot extends AbstractBot {
   private final Random random = new Random();
 
+  public RandomBot(boolean isWhite) {
+    super(isWhite);
+  }
+
   @Override
   public Move selectMove(String fen) {
     Board board = new Board();

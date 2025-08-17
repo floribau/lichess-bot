@@ -4,6 +4,10 @@ import com.github.bhlangonijr.chesslib.move.Move;
 
 public class MinimaxBot extends AbstractBot {
 
+  public MinimaxBot(boolean isWhite) {
+    super(isWhite);
+  }
+
   @Override
   public Move selectMove(String fen) {
     // TODO implement
