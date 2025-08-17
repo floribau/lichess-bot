@@ -1,4 +1,4 @@
-package org.florianbauer.lichessbot.controller;
+package org.florianbauer.lichessbot.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -10,21 +10,21 @@ import org.florianbauer.lichessbot.bot.AbstractBot;
 import org.florianbauer.lichessbot.bot.RandomBot;
 import org.florianbauer.lichessbot.exception.LichessException;
 
-public class ChessGameController {
+public class AccountHandler {
 
   private final LichessApi api;
   private final int maxGames;
   private final String userId;
   private final String username;
-  private final ConcurrentHashMap<String, ChessGame> gamesList = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, ChessGameHandler> gamesList = new ConcurrentHashMap<>();
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public ChessGameController(String apiToken) throws IOException, InterruptedException, LichessException {
+  public AccountHandler(String apiToken) throws IOException, InterruptedException, LichessException {
     // default constructor with only one game
     this(apiToken, 1);
   }
 
-  public ChessGameController(String apiToken, int maxGames)
+  public AccountHandler(String apiToken, int maxGames)
       throws IOException, InterruptedException, LichessException {
     this.api = new LichessApi(apiToken);
     this.maxGames = maxGames;
@@ -76,7 +76,7 @@ public class ChessGameController {
 
     System.out.println("Game " + gameId + " started against " + opponentUsername);
     AbstractBot bot = new RandomBot();
-    ChessGame game = new ChessGame(api, bot, username, gameId, isWhite);
+    ChessGameHandler game = new ChessGameHandler(api, bot, username, gameId, isWhite);
     gamesList.put(gameId, game);
     new Thread(game).start();
   }

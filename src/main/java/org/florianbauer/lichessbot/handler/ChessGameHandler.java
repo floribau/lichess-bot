@@ -1,4 +1,4 @@
-package org.florianbauer.lichessbot.controller;
+package org.florianbauer.lichessbot.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,7 @@ import org.florianbauer.lichessbot.api.LichessApi;
 import org.florianbauer.lichessbot.bot.AbstractBot;
 import org.florianbauer.lichessbot.exception.LichessException;
 
-public class ChessGame implements Runnable {
+public class ChessGameHandler implements Runnable {
 
   private final LichessApi api;
   private final AbstractBot bot;
@@ -17,7 +17,7 @@ public class ChessGame implements Runnable {
   private final boolean isWhite;
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public ChessGame(LichessApi api, AbstractBot bot, String username, String gameId, boolean isWhite) {
+  public ChessGameHandler(LichessApi api, AbstractBot bot, String username, String gameId, boolean isWhite) {
     this.api = api;
     this.bot = bot;
     this.username = username;
