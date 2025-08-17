@@ -3,9 +3,10 @@ package org.florianbauer.lichessbot.bot;
 import com.github.bhlangonijr.chesslib.move.Move;
 
 public class MinimaxBot extends AbstractBot {
+  private boolean isWhite;
 
   public MinimaxBot(boolean isWhite) {
-    super(isWhite);
+    this.isWhite = isWhite;
   }
 
   @Override

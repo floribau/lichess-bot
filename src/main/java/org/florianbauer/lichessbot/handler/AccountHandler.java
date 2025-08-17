@@ -75,7 +75,7 @@ public class AccountHandler {
     boolean isWhite = color.equals("white");
 
     System.out.println("Game " + gameId + " started against " + opponentUsername);
-    AbstractBot bot = new RandomBot(isWhite);
+    AbstractBot bot = new RandomBot();
     ChessGameHandler game = new ChessGameHandler(api, bot, username, gameId, isWhite);
     gamesList.put(gameId, game);
     new Thread(game).start();
