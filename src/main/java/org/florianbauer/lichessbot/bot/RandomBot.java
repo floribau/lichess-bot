@@ -9,7 +9,7 @@ public class RandomBot extends AbstractBot {
   private final Random random = new Random();
 
   @Override
-  public String selectMove(String fen) {
+  public Move selectMove(String fen) {
     Board board = new Board();
     board.loadFromFen(fen);
 
@@ -19,7 +19,6 @@ public class RandomBot extends AbstractBot {
       // TODO handle empty legal moves list
     }
 
-    Move randomMove = moves.get(random.nextInt(moves.size()));
-    return randomMove.toString();
+    return moves.get(random.nextInt(moves.size()));
   }
 }

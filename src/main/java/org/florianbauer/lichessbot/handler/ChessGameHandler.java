@@ -2,6 +2,7 @@ package org.florianbauer.lichessbot.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import java.io.IOException;
 import org.florianbauer.lichessbot.api.LichessApi;
@@ -70,8 +71,8 @@ public class ChessGameHandler implements Runnable {
         initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
       }
 
-      String move = bot.selectMove(initialFen);
-      api.makeMove(gameId, move);
+      Move move = bot.selectMove(initialFen);
+      api.makeMove(gameId, move.toString());
     }
   }
 
@@ -84,8 +85,8 @@ public class ChessGameHandler implements Runnable {
       moveList.loadFromSan(san);
       String fen = moveList.getFen();
 
-      String move = bot.selectMove(fen);
-      api.makeMove(gameId, move);
+      Move move = bot.selectMove(fen);
+      api.makeMove(gameId, move.toString());
     }
   }
 

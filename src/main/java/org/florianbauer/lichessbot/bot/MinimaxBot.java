@@ -1,10 +1,12 @@
 package org.florianbauer.lichessbot.bot;
 
-public class MinimaxBot extends AbstractBot{
+import com.github.bhlangonijr.chesslib.move.Move;
+
+public class MinimaxBot extends AbstractBot {
 
   @Override
-  public String selectMove(String fen) {
+  public Move selectMove(String fen) {
     // TODO implement
-    return "";
+    return null;
   }
 }
