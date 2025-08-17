@@ -97,7 +97,7 @@ public class ChessGameHandler implements Runnable {
 
     if (!fromUsername.equals(username)) {
       try {
-        String answerMessage = "Howdy, I'm a abstractBot!";
+        String answerMessage = "Howdy, I'm a bot!";
         // TODO write nicer answers depending on message(s), maybe include LLM?
         api.writeChatMessage(gameId, answerMessage, room);
       } catch (Exception e) {
