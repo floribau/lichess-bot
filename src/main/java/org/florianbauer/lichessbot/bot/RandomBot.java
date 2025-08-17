@@ -14,14 +14,11 @@ public class RandomBot extends AbstractBot {
 
     List<Move> moves = board.legalMoves();
 
-    if (!moves.isEmpty()) {
-      Move randomMove = moves.get(random.nextInt(moves.size()));
-      return randomMove.getSan();
-    }
-    else {
+    if (moves.isEmpty()) {
       // TODO handle empty legal moves list
     }
 
-    return "";  // TODO remove placeholder
+    Move randomMove = moves.get(random.nextInt(moves.size()));
+    return randomMove.toString();
   }
 }

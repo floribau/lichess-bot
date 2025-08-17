@@ -34,6 +34,12 @@ public class ChessGameHandler implements Runnable {
     }
   }
 
+  private boolean isMyTurn(String san) {
+    String[] moves = san.trim().split("\\s+");
+    int moveCount = san.isBlank() ? 0 : moves.length;
+    return (isWhite && moveCount % 2 == 0) || (!isWhite && moveCount % 2 == 1);
+  }
+
   private void handleGameState(String json) {
     try {
       JsonNode event = mapper.readTree(json);
@@ -56,19 +62,31 @@ public class ChessGameHandler implements Runnable {
 
   private void handleGameFullEvent(JsonNode event)
       throws LichessException, IOException, InterruptedException {
-    String san = event.get("moves").asText();
-    MoveList list = new MoveList();
-    list.loadFromSan(san);
-    System.out.println("gameFullEvent, moves: " + san);
+    String san = event.get("state").get("moves").asText();
 
-    if (isWhite) {
-      api.makeMove(gameId, bot.selectMove(list.getFen()));
+    if (isMyTurn(san)) {
+      String initialFen = event.get("initialFen").asText();
+      if (initialFen.equals("startpos")) {
+        initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+      }
+
+      String move = bot.selectMove(initialFen);
+      api.makeMove(gameId, move);
     }
   }
 
-  private void handleGameStateEvent(JsonNode event) {
+  private void handleGameStateEvent(JsonNode event)
+      throws LichessException, IOException, InterruptedException {
     String san = event.get("moves").asText();
-    System.out.println("gameStateEvent, moves: " + san);
+
+    if (isMyTurn(san)) {
+      MoveList moveList = new MoveList();
+      moveList.loadFromSan(san);
+      String fen = moveList.getFen();
+
+      String move = bot.selectMove(fen);
+      api.makeMove(gameId, move);
+    }
   }
 
   private void handleChatLineEvent(JsonNode event) {
