@@ -52,7 +52,9 @@ public class ChessGameHandler implements Runnable {
         case "chatLine" -> handleChatLineEvent(event);
         case "opponentGone" -> handleOpponentGoneEvent(event);
         default -> {
-          // ignore
+          // ignore other event types
+          System.out.println("Unexpected event of type " + type);
+          System.out.println(json);
         }
       }
     }

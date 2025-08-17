@@ -13,30 +13,29 @@ import org.florianbauer.lichessbot.exception.LichessException;
 public class AccountHandler {
 
   private final LichessApi api;
-  private final int maxGames;
+  private final int maxParallelGames;
   private final String userId;
   private final String username;
   private final ConcurrentHashMap<String, ChessGameHandler> gamesList = new ConcurrentHashMap<>();
   private final ObjectMapper mapper = new ObjectMapper();
 
   public AccountHandler(String apiToken) throws IOException, InterruptedException, LichessException {
-    // default constructor with only one game
+    // default constructor with only one parallel game
     this(apiToken, 1);
   }
 
-  public AccountHandler(String apiToken, int maxGames)
+  public AccountHandler(String apiToken, int maxParallelGames)
       throws IOException, InterruptedException, LichessException {
     this.api = new LichessApi(apiToken);
-    this.maxGames = maxGames;
+    this.maxParallelGames = maxParallelGames;
 
     JsonNode profile = mapper.readTree(this.api.getProfile());
     this.userId = profile.get("id").asText();
     this.username = profile.get("username").asText();
+
     if (!profile.has("title") || !profile.get("title").asText().equals("BOT")) {
       System.out.println("Account not a bot yet, upgrading to bot");
       api.upgradeToBot();
-    } else {
-      System.out.println("Already a bot account!");
     }
 
     startBot();
@@ -44,7 +43,7 @@ public class AccountHandler {
 
   public void startBot() throws IOException, InterruptedException, LichessException {
     api.streamEvents(this::handleEvent);
-    // TODO throw error if code 404
+    // TODO implement error passing best practice
   }
 
   private void handleEvent(String json) {
@@ -56,10 +55,10 @@ public class AccountHandler {
         case "gameStart" -> handleGameStartEvent(event);
         case "gameFinish" -> handleGameFinishEvent(event);
         case "challenge" -> handleChallengeEvent(event);
-        // case "challengeCanceled" -> System.out.println();
-        // case "challengeDeclined" -> System.out.println();
         default -> {
-          // ignore
+          // ignore other event types
+          System.out.println("Unexpected event of type " + type);
+          System.out.println(json);
         }
       }
     }
@@ -92,7 +91,7 @@ public class AccountHandler {
     String challengeId = event.get("challenge").get("id").asText();
 
     try {
-      if (gamesList.size() < maxGames) {
+      if (gamesList.size() < maxParallelGames) {
         // accept challenge
         System.out.println("Challenge accepted: " + challengeId);
         api.acceptChallenge(challengeId);
