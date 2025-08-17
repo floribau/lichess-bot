@@ -8,6 +8,7 @@ import java.util.Random;
 public class RandomBot extends AbstractBot {
   private final Random random = new Random();
 
+  @Override
   public String selectMove(String fen) {
     Board board = new Board();
     board.loadFromFen(fen);
